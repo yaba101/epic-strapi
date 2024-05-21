@@ -20,7 +20,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const globalData = await getGlobalPageData();
-  console.log("footer", globalData.footer);
   return (
     <html lang="en">
       <body className={inter.className}>
