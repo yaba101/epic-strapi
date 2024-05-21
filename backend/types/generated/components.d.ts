@@ -1,5 +1,17 @@
 import type { Schema, Attribute } from '@strapi/strapi';
 
+export interface ComponentFeature extends Schema.Component {
+  collectionName: 'components_component_features';
+  info: {
+    displayName: 'Feature';
+  };
+  attributes: {
+    heading: Attribute.String;
+    subHeading: Attribute.Text;
+    icon: Attribute.Enumeration<['CLOCK_ICON', 'CHECK_ICON', 'CLOUD_ICON']>;
+  };
+}
+
 export interface ComponentLink extends Schema.Component {
   collectionName: 'components_component_links';
   info: {
@@ -9,6 +21,19 @@ export interface ComponentLink extends Schema.Component {
     url: Attribute.String;
     text: Attribute.String;
     isExternal: Attribute.Boolean & Attribute.DefaultTo<false>;
+  };
+}
+
+export interface LayoutFeaturesSection extends Schema.Component {
+  collectionName: 'components_layout_features_sections';
+  info: {
+    displayName: 'Features Section';
+    description: '';
+  };
+  attributes: {
+    title: Attribute.String;
+    description: Attribute.Text;
+    feature: Attribute.Component<'component.feature', true>;
   };
 }
 
@@ -29,7 +54,9 @@ export interface LayoutHeroSection extends Schema.Component {
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
+      'component.feature': ComponentFeature;
       'component.link': ComponentLink;
+      'layout.features-section': LayoutFeaturesSection;
       'layout.hero-section': LayoutHeroSection;
     }
   }
