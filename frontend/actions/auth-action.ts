@@ -1,6 +1,16 @@
 "use server";
+import { registerUserService } from "@/data/services/auth-services";
 import z from "zod";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
+const config = {
+  maxAge: 60 * 60 * 24 * 7, // 1 week
+  path: "/",
+  domain: process.env.HOST ?? "localhost",
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+};
 export async function registerUserAction(prevState: any, formData: FormData) {
   const validatedFields = schemaRegister.safeParse({
     username: formData.get("username"),
@@ -16,7 +26,29 @@ export async function registerUserAction(prevState: any, formData: FormData) {
       message: "Missing Fields. Failed to Register.",
     };
   }
+  const responseData = await registerUserService(validatedFields.data);
+  if (!responseData) {
+    return {
+      ...prevState,
+      strapiErrors: null,
+      zodErrors: null,
+      message: "Ops! Something went wrong. Please try again.",
+    };
+  }
 
+  if (responseData.error) {
+    return {
+      ...prevState,
+      strapiErrors: responseData.error,
+      zodErrors: null,
+      message: "Failed to Register.",
+    };
+  }
+  cookies().set("jwt", responseData.jwt, config);
+  redirect("/dashboard");
+  console.log("#############");
+  console.log("User Registered Successfully", responseData.jwt);
+  console.log("#############");
   return {
     ...prevState,
     data: "ok",
