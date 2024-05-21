@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useFormState } from "react-dom";
 
 import {
   CardTitle,
@@ -13,11 +14,23 @@ import {
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { ZodErrors } from "@/components/custom/zod-error";
+import { StrapiErrors } from "@/components/custom/strapi-error";
+import { SubmitButton } from "@/components/custom/submit-button";
+import { loginUserAction } from "@/actions/auth-action";
+
+const INITIAL_STATE = {
+  zodErrors: null,
+  strapiErrors: null,
+  data: null,
+  message: null,
+};
 
 export function SigninForm() {
+  const [formState, formAction] = useFormState(loginUserAction, INITIAL_STATE);
   return (
     <div className="w-full max-w-md">
-      <form>
+      <form action={formAction}>
         <Card>
           <CardHeader className="space-y-1">
             <CardTitle className="text-3xl font-bold">Sign In</CardTitle>
@@ -34,6 +47,7 @@ export function SigninForm() {
                 type="text"
                 placeholder="username or email"
               />
+              <ZodErrors error={formState?.zodErrors?.identifier} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
@@ -43,15 +57,21 @@ export function SigninForm() {
                 type="password"
                 placeholder="password"
               />
+              <ZodErrors error={formState.zodErrors?.password} />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col">
-            <button className="w-full">Sign In</button>
+            <SubmitButton
+              className="w-full"
+              text="Sign In"
+              loadingText="Loading"
+            />
+            <StrapiErrors error={formState?.strapiErrors} />
           </CardFooter>
         </Card>
         <div className="mt-4 text-center text-sm">
           {"Don't"} have an account?
-          <Link className="underline ml-2" href="sign-up">
+          <Link className="underline ml-2" href="signup">
             Sign Up
           </Link>
         </div>
