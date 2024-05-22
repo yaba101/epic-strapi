@@ -12,6 +12,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "placehold.co",
       },
+      {
+        protocol: "https",
+        hostname: "https://reassuring-amusement-a3ab8d6e07.media.strapiapp.com",
+      },
     ],
   },
 };
