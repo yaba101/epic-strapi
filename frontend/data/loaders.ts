@@ -1,9 +1,11 @@
 import qs from "qs";
 import { flattenAttributes, getStrapiURL } from "@/lib/utils";
+import { getAuthToken } from "./services/get-token";
 const baseUrl = getStrapiURL();
 
 async function fetchData(url: string) {
-  const authToken = null; // we will implement this later getAuthToken() later
+  const authToken = await getAuthToken();
+
   const headers = {
     method: "GET",
     headers: {
@@ -18,10 +20,9 @@ async function fetchData(url: string) {
     return flattenAttributes(data);
   } catch (error) {
     console.error("Error fetching data:", error);
-    throw error; // or return null;
+    throw error;
   }
 }
-
 export async function getHomePageData() {
   const url = new URL(`api/home-page`, baseUrl);
   url.search = qs.stringify({
@@ -59,7 +60,6 @@ export async function getGlobalPageData() {
   return await fetchData(url.href);
 }
 
-
 export async function getGlobalPageMetaData() {
   const url = new URL(`api/global`, baseUrl);
   url.search = qs.stringify({
@@ -67,4 +67,13 @@ export async function getGlobalPageMetaData() {
   });
 
   return await fetchData(url.href);
+}
+
+export async function getSummaries() {
+  const url = new URL(`api/summaries`, baseUrl);
+  return await fetchData(url.href);
+}
+
+export async function getSummaryById(summaryId: string) {
+  return fetchData(`${baseUrl}/api/summaries/${summaryId}`);
 }

@@ -19,12 +19,12 @@ interface FooterProps {
   };
 }
 
-// function selectSocialIcon(url: string) {
-//   if (url.includes("youtube")) return <YoutubeIcon className="h-6 w-6" />;
-//   if (url.includes("twitter")) return <TwitterIcon className="h-6 w-6" />;
-//   if (url.includes("github")) return <GithubIcon className="h-6 w-6" />;
-//   return null;
-// }
+function selectSocialIcon(url: string) {
+  if (url.includes("youtube")) return <YoutubeIcon className="h-6 w-6" />;
+  if (url.includes("twitter")) return <TwitterIcon className="h-6 w-6" />;
+  if (url.includes("github")) return <GithubIcon className="h-6 w-6" />;
+  return null;
+}
 
 export function Footer({ data }: Readonly<FooterProps>) {
   const { logoText, socialLink, text } = data;
@@ -34,7 +34,7 @@ export function Footer({ data }: Readonly<FooterProps>) {
         <Logo dark text={logoText.text} />
         <p className="mt-4 md:mt-0 text-sm text-gray-300">{text}</p>
         <div className="flex items-center space-x-4">
-          {/* {socialLink.map((link) => {
+          {socialLink.map((link) => {
             return (
               <Link
                 key={link.id}
@@ -45,7 +45,7 @@ export function Footer({ data }: Readonly<FooterProps>) {
                 <span className="sr-only">Visit us at {link.text}</span>
               </Link>
             );
-          })} */}
+          })}
         </div>
       </div>
     </div>
