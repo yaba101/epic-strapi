@@ -1,10 +1,14 @@
-// import {
-//   updateSummaryAction,
-//   deleteSummaryAction,
-// } from "@/actions/summary-action";
+"use client";
+import { useFormState } from "react-dom";
+import {
+  updateSummaryAction,
+  deleteSummaryAction,
+} from "@/actions/summary-action";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { StrapiErrors } from "@/components/custom/strapi-error";
+
 import { cn } from "@/lib/utils";
 
 import {
@@ -18,6 +22,12 @@ import {
 import { SubmitButton } from "@/components/custom/submit-button";
 import { DeleteButton } from "@/components/custom/delete-button";
 
+const INITIAL_STATE = {
+  strapiErrors: null,
+  data: null,
+  message: null,
+};
+
 export function SummaryCardForm({
   item,
   className,
@@ -25,7 +35,17 @@ export function SummaryCardForm({
   readonly item: any;
   readonly className?: string;
 }) {
-  //   const deleteSummaryById = deleteSummaryAction.bind(null, item.id);
+  const deleteSummaryById = deleteSummaryAction.bind(null, item.id);
+
+  const [deleteState, deleteAction] = useFormState(
+    deleteSummaryById,
+    INITIAL_STATE
+  );
+
+  const [updateState, updateAction] = useFormState(
+    updateSummaryAction,
+    INITIAL_STATE
+  );
 
   return (
     <Card className={cn("mb-8 relative h-auto", className)}>
@@ -34,7 +54,7 @@ export function SummaryCardForm({
       </CardHeader>
       <CardContent>
         <div>
-          <form>
+          <form action={updateAction}>
             <Input
               id="title"
               name="title"
@@ -54,12 +74,16 @@ export function SummaryCardForm({
               loadingText="Updating Summary"
             />
           </form>
-          <form>
+          <form action={deleteAction}>
             <DeleteButton className="absolute right-4 top-4 bg-red-700 hover:bg-red-600" />
           </form>
         </div>
       </CardContent>
-      <CardFooter></CardFooter>
+      <CardFooter>
+        <StrapiErrors
+          error={deleteState?.strapiErrors || updateState?.strapiErrors}
+        />
+      </CardFooter>
     </Card>
   );
 }
